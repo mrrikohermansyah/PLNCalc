@@ -1,0 +1,122 @@
+.receipt {
+  --rc-bg: #ffffff;
+  --rc-text: #101828;
+  --rc-muted: #5b6472;
+  --rc-line: #ccd3dd;
+  width: 100%;
+  max-width: 430px;
+  margin: 0 auto;
+  padding: 20px 18px 16px;
+  background: var(--rc-bg);
+  color: var(--rc-text);
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  line-height: 1.7;
+  border: 1px solid #e6e9ef;
+  border-radius: 4px;
+  box-shadow: 0 2px 12px rgba(16, 24, 40, 0.14);
+  font-variant-numeric: tabular-nums;
+}
+
+.rc-head {
+  text-align: center;
+  padding-bottom: 12px;
+  border-bottom: 1px dashed var(--rc-line);
+}
+
+.rc-brand {
+  font-size: 20px;
+  font-weight: 750;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.rc-subtitle {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--rc-muted);
+  margin-top: 3px;
+}
+
+.rc-section {
+  padding: 11px 0;
+  border-bottom: 1px dashed var(--rc-line);
+}
+
+.rc-section:last-of-type {
+  border-bottom: 0;
+}
+
+.rc-section-title {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--rc-text);
+  margin-bottom: 7px;
+}
+
+.rc-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 6px;
+}
+
+.rc-key {
+  flex: none;
+  max-width: 46%;
+  color: var(--rc-muted);
+  overflow-wrap: anywhere;
+}
+
+.rc-leader {
+  flex: 1 1 16px;
+  min-width: 12px;
+  border-bottom: 1px dotted var(--rc-line);
+  transform: translateY(-4px);
+}
+
+.rc-val {
+  flex: none;
+  margin-left: auto;
+  text-align: right;
+  font-weight: 650;
+  overflow-wrap: anywhere;
+  max-width: 100%;
+}
+
+.rc-note {
+  font-size: 11px;
+  color: var(--rc-muted);
+  line-height: 1.6;
+  margin-bottom: 4px;
+}
+
+.rc-foot {
+  text-align: center;
+  padding-top: 12px;
+  border-top: 1px dashed var(--rc-line);
+}
+
+.rc-foot-line {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.receipt[data-receipt-mode='ringkas'] .rc-note {
+  font-size: 11px;
+}
+
+.rc-export {
+  box-shadow: none;
+  border: 0;
+  border-radius: 0;
+  background: #ffffff;
+  color: #101828;
+  max-width: none;
+}

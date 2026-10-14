@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="id" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>PLNCalc — Kalkulator Konsumsi & Biaya Listrik</title>
+    <meta
+      name="description"
+      content="PLNCalc menghitung estimasi konsumsi energi (kWh) dan biaya listrik (Rp) untuk perangkat elektronik apa pun, lengkap dengan struk, ekspor PNG, multi-perangkat, riwayat, dan simulasi penghematan."
+    />
+    <meta name="theme-color" content="#ffffff" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" href="./icons/icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
+    <link rel="stylesheet" href="./src/styles/tokens.css" />
+    <link rel="stylesheet" href="./src/styles/base.css" />
+    <link rel="stylesheet" href="./src/styles/layout.css" />
+    <link rel="stylesheet" href="./src/styles/components.css" />
+    <link rel="stylesheet" href="./src/styles/receipt.css" />
+    <link rel="stylesheet" href="./src/styles/print.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#app">Lewati ke konten utama</a>
+
+    <header class="app-header">
+      <div class="app-header__inner">
+        <div class="brand">
+          <span class="brand__mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M13 2 3 14h7l-1 8 10-12h-7z" />
+            </svg>
+          </span>
+          <span class="brand__text">
+            <span class="brand__name">PLNCalc</span>
+            <span class="brand__tagline">Ketahui Konsumsi. Kendalikan Biaya.</span>
+          </span>
+        </div>
+
+        <button id="theme-toggle" class="btn btn--icon btn--ghost" type="button" aria-label="Ganti tema terang/gelap" aria-pressed="false">
+          <span class="theme-icon" aria-hidden="true"></span>
+        </button>
+      </div>
+
+      <nav class="app-nav" aria-label="Navigasi utama">
+        <ul id="primary-nav" class="nav-list"></ul>
+      </nav>
+    </header>
+
+    <main id="app" class="app-main" tabindex="-1"></main>
+
+    <footer class="app-footer">
+      <p class="app-footer__line">PLNCalc — Kalkulator konsumsi &amp; biaya listrik universal.</p>
+      <p class="app-footer__note">
+        Semua hasil adalah estimasi berdasarkan daya, durasi, dan tarif yang Anda masukkan. PLNCalc adalah alat bantu independen,
+        tidak berafiliasi dengan PLN, dan tidak menampilkan tarif resmi terkini.
+      </p>
+    </footer>
+
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>

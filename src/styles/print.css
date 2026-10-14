@@ -1,0 +1,43 @@
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  .receipt-scroll,
+  .receipt-scroll * {
+    visibility: visible;
+  }
+
+  .receipt-scroll {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    padding: 0;
+    overflow: visible;
+    background: #ffffff;
+  }
+
+  .receipt-view {
+    border: 0;
+    box-shadow: none;
+    padding: 0;
+    background: #ffffff;
+  }
+
+  .receipt {
+    max-width: 100%;
+    width: 100%;
+    box-shadow: none;
+    border: 0;
+  }
+
+  .toast-stack,
+  .modal {
+    display: none;
+  }
+
+  @page {
+    margin: 12mm;
+  }
+}
