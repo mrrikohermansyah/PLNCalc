@@ -40,7 +40,12 @@ export function createReceiptView({
 
   const scroll = el('div', { class: 'receipt-scroll' });
   const receiptEl = el('div', { class: 'receipt', id: 'receipt-preview' });
-  scroll.appendChild(receiptEl);
+  const emptyState = el('p', {
+    class: 'empty-hint',
+    text: 'Struk akan muncul otomatis saat isian perangkat valid.',
+  });
+  receiptEl.hidden = true;
+  scroll.append(receiptEl, emptyState);
   root.appendChild(scroll);
 
   const actionBar = el('div', { class: 'receipt-actions' });
@@ -86,9 +91,14 @@ export function createReceiptView({
   }
 
   function update(data) {
-    renderReceiptInto(receiptEl, data);
-    const disabled = !data;
-    for (const btn of [saveButton, exportButton, printButton, presetButton]) btn.disabled = disabled;
+    if (data) {
+      renderReceiptInto(receiptEl, data);
+    } else {
+      receiptEl.innerHTML = '';
+    }
+    receiptEl.hidden = !data;
+    emptyState.hidden = Boolean(data);
+    for (const btn of [saveButton, exportButton, printButton, presetButton]) btn.disabled = !data;
   }
 
   setMode(currentMode);

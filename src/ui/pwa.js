@@ -2,7 +2,9 @@ let reloadPrompted = false;
 
 export async function registerServiceWorker({ onUpdate } = {}) {
   if (typeof navigator === 'undefined' || !('serviceWorker' in navigator)) return null;
-  if (!import.meta.env.PROD) return null;
+  // import.meta.env hanya ada saat dilayani/dibangun Vite; tidak ada saat dibuka via file://
+  const isProd = typeof import.meta.env !== 'undefined' && import.meta.env.PROD;
+  if (!isProd) return null;
 
   try {
     const registration = await navigator.serviceWorker.register('./sw.js', { scope: './' });
