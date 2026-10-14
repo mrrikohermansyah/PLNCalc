@@ -4,22 +4,35 @@
   box-sizing: border-box;
 }
 
-html,
-body {
-  margin: 0;
-  padding: 0;
-  max-width: 100%;
-  overflow-x: hidden;
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
+  margin: 0;
+  padding: 0;
   font-family: var(--font);
   font-size: 15px;
   line-height: 1.55;
   color: var(--text);
   background: var(--bg);
-  -webkit-text-size-adjust: 100%;
   -webkit-font-smoothing: antialiased;
+  overscroll-behavior-y: none;
+}
+
+/* Sentuhan: hilangkan jeda 300ms & zoom dua-ketuk pada kontrol, tanpa mematikan scroll.
+   Pinch-zoom tetap dikendalikan lewat meta viewport (dan pengaturan aksesibilitas OS). */
+a,
+button,
+label,
+input,
+select,
+textarea,
+summary,
+[role='button'] {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 h1,
@@ -93,7 +106,7 @@ textarea {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  min-height: 42px;
+  min-height: 44px;
   padding: 9px 16px;
   border: 1px solid transparent;
   border-radius: var(--radius-sm);
@@ -107,12 +120,9 @@ textarea {
   text-align: center;
 }
 
-.btn:hover:not(:disabled) {
-  background: var(--border);
-}
-
 .btn:active:not(:disabled) {
   transform: translateY(1px);
+  filter: brightness(0.96);
 }
 
 .btn:disabled {
@@ -126,20 +136,10 @@ textarea {
   border-color: var(--primary);
 }
 
-.btn--primary:hover:not(:disabled) {
-  background: var(--primary-hover);
-  border-color: var(--primary-hover);
-}
-
 .btn--accent {
   background: var(--accent);
   color: #fff;
   border-color: var(--accent);
-}
-
-.btn--accent:hover:not(:disabled) {
-  filter: brightness(1.08);
-  background: var(--accent);
 }
 
 .btn--ghost {
@@ -147,20 +147,15 @@ textarea {
   border-color: var(--border-strong);
 }
 
-.btn--ghost:hover:not(:disabled) {
-  background: var(--surface-2);
-  border-color: var(--primary);
-}
-
 .btn--sm {
-  min-height: 36px;
+  min-height: 40px;
   padding: 6px 12px;
   font-size: 13px;
 }
 
 .btn--icon {
-  min-height: 38px;
-  width: 38px;
+  min-height: 44px;
+  width: 44px;
   padding: 0;
 }
 
@@ -170,24 +165,46 @@ textarea {
   color: #fff;
 }
 
-.btn--danger:hover:not(:disabled) {
-  filter: brightness(1.06);
-  background: var(--danger);
-}
-
 .btn--danger-text {
   color: var(--danger);
 }
 
-.btn--danger-text:hover:not(:disabled) {
-  border-color: var(--danger);
-  background: var(--danger-soft);
+/* Hover hanya untuk penunjuk presisi — di layar sentuh :hover bisa tertinggal setelah diketuk. */
+@media (hover: hover) and (pointer: fine) {
+  .btn:hover:not(:disabled) {
+    background: var(--border);
+  }
+
+  .btn--primary:hover:not(:disabled) {
+    background: var(--primary-hover);
+    border-color: var(--primary-hover);
+  }
+
+  .btn--accent:hover:not(:disabled) {
+    filter: brightness(1.08);
+    background: var(--accent);
+  }
+
+  .btn--ghost:hover:not(:disabled) {
+    background: var(--surface-2);
+    border-color: var(--primary);
+  }
+
+  .btn--danger:hover:not(:disabled) {
+    filter: brightness(1.06);
+    background: var(--danger);
+  }
+
+  .btn--danger-text:hover:not(:disabled) {
+    border-color: var(--danger);
+    background: var(--danger-soft);
+  }
 }
 
 /* ---------- inputs ---------- */
 .input {
   width: 100%;
-  min-height: 42px;
+  min-height: 44px;
   padding: 9px 12px;
   border: 1px solid var(--border-strong);
   border-radius: var(--radius-sm);
@@ -198,8 +215,12 @@ textarea {
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-.input:hover:not(:disabled) {
-  border-color: var(--primary);
+/* 16px minimum untuk layar sentuh: di bawah itu Safari iOS otomatis men-zoom halaman
+   saat input difokus. Perangkat desktop (pointer halus, layar lebar) tidak membutuhkannya. */
+@media (pointer: coarse), (max-width: 1023.98px) {
+  .input {
+    font-size: 16px;
+  }
 }
 
 .input:focus {
@@ -231,6 +252,12 @@ select.input {
   background-size: 5px 5px, 5px 5px;
   background-repeat: no-repeat;
   padding-right: 34px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .input:hover:not(:disabled) {
+    border-color: var(--primary);
+  }
 }
 
 .input--unit {
@@ -349,6 +376,7 @@ input[type='number']::-webkit-inner-spin-button {
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  min-height: 44px;
   padding: 8px 12px;
   border: 1px solid var(--border-strong);
   border-radius: 999px;
@@ -357,10 +385,6 @@ input[type='number']::-webkit-inner-spin-button {
   font-weight: 600;
   cursor: pointer;
   transition: border-color 0.15s ease, background 0.15s ease;
-}
-
-.radio-label:hover {
-  border-color: var(--primary);
 }
 
 .radio-label:has(input:checked) {
@@ -373,6 +397,8 @@ input[type='number']::-webkit-inner-spin-button {
   accent-color: var(--primary);
   width: 16px;
   height: 16px;
+  /* ukuran kontrol diatur width/height; font-size tetap 16px agar iOS tidak men-zoom saat fokus */
+  font-size: 16px;
 }
 
 .switch-row {
@@ -391,6 +417,7 @@ input[type='number']::-webkit-inner-spin-button {
   height: 18px;
   accent-color: var(--primary);
   flex: none;
+  font-size: 16px;
 }
 
 /* ---------- chips / segmented ---------- */
@@ -401,6 +428,10 @@ input[type='number']::-webkit-inner-spin-button {
 }
 
 .chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
   padding: 7px 12px;
   border: 1px solid var(--border-strong);
   border-radius: 999px;
@@ -410,11 +441,6 @@ input[type='number']::-webkit-inner-spin-button {
   color: var(--text-muted);
   cursor: pointer;
   transition: all 0.15s ease;
-}
-
-.chip:hover {
-  border-color: var(--primary);
-  color: var(--primary);
 }
 
 .chip--active {
@@ -432,6 +458,7 @@ input[type='number']::-webkit-inner-spin-button {
 }
 
 .segmented-btn {
+  min-height: 38px;
   padding: 6px 14px;
   border: 0;
   border-radius: 999px;
@@ -448,17 +475,28 @@ input[type='number']::-webkit-inner-spin-button {
   box-shadow: var(--shadow-sm);
 }
 
+@media (hover: hover) and (pointer: fine) {
+  .radio-label:hover {
+    border-color: var(--primary);
+  }
+
+  .chip:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+  }
+}
+
 /* ---------- toast ---------- */
 .toast-stack {
   position: fixed;
   z-index: 90;
-  left: 50%;
-  bottom: 18px;
-  transform: translateX(-50%);
+  left: calc(12px + env(safe-area-inset-left));
+  right: calc(12px + env(safe-area-inset-right));
+  bottom: calc(12px + env(safe-area-inset-bottom));
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 10px;
-  width: min(520px, calc(100vw - 24px));
   pointer-events: none;
 }
 
@@ -466,6 +504,7 @@ input[type='number']::-webkit-inner-spin-button {
   display: flex;
   align-items: center;
   gap: 10px;
+  width: min(520px, 100%);
   padding: 12px 14px;
   border-radius: var(--radius);
   border: 1px solid var(--border);
@@ -500,19 +539,16 @@ input[type='number']::-webkit-inner-spin-button {
 
 .toast-close {
   flex: none;
-  width: 26px;
-  height: 26px;
+  width: 40px;
+  height: 40px;
+  margin: -8px -6px -8px 0;
   border: 0;
-  border-radius: 6px;
+  border-radius: 8px;
   background: transparent;
   color: inherit;
-  font-size: 18px;
+  font-size: 22px;
   line-height: 1;
   cursor: pointer;
-}
-
-.toast-close:hover {
-  background: color-mix(in srgb, currentColor 12%, transparent);
 }
 
 .toast--leaving {
@@ -534,18 +570,21 @@ input[type='number']::-webkit-inner-spin-button {
 
 /* ---------- modal ---------- */
 .modal {
-  width: min(560px, calc(100vw - 24px));
+  width: min(560px, calc(100% - 24px));
   max-height: min(86vh, 780px);
+  max-height: min(82dvh, 780px);
   padding: 0;
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   background: var(--surface);
   color: var(--text);
   box-shadow: var(--shadow-md);
+  overflow: hidden;
+  overscroll-behavior: contain;
 }
 
 .modal--wide {
-  width: min(880px, calc(100vw - 24px));
+  width: min(880px, calc(100% - 24px));
 }
 
 .modal::backdrop {
@@ -557,6 +596,7 @@ input[type='number']::-webkit-inner-spin-button {
   display: flex;
   flex-direction: column;
   max-height: min(86vh, 780px);
+  max-height: min(82dvh, 780px);
 }
 
 .modal-head {
@@ -573,25 +613,23 @@ input[type='number']::-webkit-inner-spin-button {
 }
 
 .modal-close {
-  width: 32px;
-  height: 32px;
+  flex: none;
+  width: 40px;
+  height: 40px;
   border: 1px solid var(--border);
   border-radius: 8px;
   background: var(--surface);
-  font-size: 20px;
+  font-size: 22px;
   line-height: 1;
   cursor: pointer;
-}
-
-.modal-close:hover {
-  border-color: var(--danger);
-  color: var(--danger);
 }
 
 .modal-content {
   padding: 18px;
   overflow-y: auto;
   flex: 1;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
 .modal-actions {
@@ -600,8 +638,25 @@ input[type='number']::-webkit-inner-spin-button {
   justify-content: flex-end;
   gap: 10px;
   padding: 14px 18px;
+  padding-bottom: calc(14px + env(safe-area-inset-bottom));
   border-top: 1px solid var(--border);
   background: var(--surface-2);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .modal-close:hover {
+    border-color: var(--danger);
+    color: var(--danger);
+  }
+
+  .toast-close:hover {
+    background: color-mix(in srgb, currentColor 12%, transparent);
+  }
+}
+
+.modal-close:active:not(:disabled),
+.toast-close:active:not(:disabled) {
+  background: color-mix(in srgb, currentColor 14%, transparent);
 }
 
 /* ---------- misc ---------- */
@@ -657,4 +712,30 @@ input[type='number']::-webkit-inner-spin-button {
   flex: none;
   color: var(--primary);
   margin-top: 1px;
+}
+
+/* ---------- target sentuh pada perangkat layar sentuh / layar sempit ---------- */
+@media (pointer: coarse), (max-width: 1023.98px) {
+  .btn--sm,
+  .segmented-btn {
+    min-height: 44px;
+  }
+}
+
+/* ---------- kunci scroll saat dialog modal terbuka ----------
+   Body dibuat position:fixed dengan offset scroll posisi sebelumnya; `overflow: hidden`
+   saja masih bisa digeser dengan sentuhan pada Safari iOS. */
+html.modal-open {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+html.modal-open body {
+  position: fixed;
+  left: 0;
+  top: var(--modal-lock-offset, 0px);
+  width: 100%;
+  padding-right: var(--modal-lock-gutter, 0px);
+  overflow: hidden;
+  overscroll-behavior: none;
 }

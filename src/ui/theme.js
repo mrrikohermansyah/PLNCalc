@@ -3,7 +3,7 @@ export function applyTheme(theme) {
   document.documentElement.dataset.theme = value;
   document.documentElement.style.colorScheme = value;
   const meta = document.querySelector('meta[name="theme-color"]');
-  if (meta) meta.setAttribute('content', value === 'dark' ? '#0f1420' : '#ffffff');
+  if (meta) meta.setAttribute('content', value === 'dark' ? '#161c26' : '#ffffff');
   return value;
 }
 

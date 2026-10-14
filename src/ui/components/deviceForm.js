@@ -31,14 +31,18 @@ export function createDeviceForm({
 
   const root = el('div', { class: `device-form${compact ? ' device-form--compact' : ''}` });
 
-  function numberControl(name, attrs = {}) {
+  function numberControl(name, { decimal = false, ...attrs } = {}) {
+    // Kolom desimal memakai type=text + inputmode=decimal: keyboard numeric iOS tidak punya
+    // tombol koma, sementara format Indonesia ("1.444,70") lazim dipakai. Parsing & validasi
+    // tetap di validate.js, jadi step/min/max di sini hanya berlaku untuk field bilangan bulat.
     const control = el('input', {
       class: 'input',
-      type: 'number',
+      type: decimal ? 'text' : 'number',
       id: id(name),
       name,
       step: 'any',
       inputmode: 'decimal',
+      autocomplete: 'off',
       ...attrs,
     });
     fields[name] = control;
@@ -144,7 +148,7 @@ export function createDeviceForm({
   );
 
   const singlePowerRow = el('div', { class: 'field-pair field-pair--power' });
-  const powerValueInput = numberControl('powerValue', { min: '0', step: 'any', placeholder: 'mis. 650' });
+  const powerValueInput = numberControl('powerValue', { decimal: true, min: '0', placeholder: 'mis. 650' });
   const powerUnitSelect = el(
     'select',
     { class: 'input input--unit', id: id('powerUnit'), name: 'powerUnit', 'aria-label': 'Satuan daya' },
@@ -160,8 +164,8 @@ export function createDeviceForm({
   powerGrid.appendChild(singlePowerRow);
 
   const rangeRow = el('div', { class: 'field-pair' });
-  const powerMinInput = numberControl('powerMin', { min: '0', step: 'any', placeholder: 'mis. 200' });
-  const powerMaxInput = numberControl('powerMax', { min: '0', step: 'any', placeholder: 'mis. 900' });
+  const powerMinInput = numberControl('powerMin', { decimal: true, min: '0', placeholder: 'mis. 200' });
+  const powerMaxInput = numberControl('powerMax', { decimal: true, min: '0', placeholder: 'mis. 900' });
   rangeRow.appendChild(labeledField('Daya minimum', powerMinInput, { htmlFor: powerMinInput.id }).wrapper);
   rangeRow.appendChild(labeledField('Daya maksimum', powerMaxInput, { htmlFor: powerMaxInput.id }).wrapper);
   rangeRow.hidden = true;
@@ -222,7 +226,7 @@ export function createDeviceForm({
   usageGrid.appendChild(labeledField('Preset durasi', chips, { hint: 'Durasi bisa diisi bebas, preset hanya mempermudah.' }).wrapper);
 
   const durationRow = el('div', { class: 'field-pair' });
-  const hoursInput = numberControl('hoursPerDay', { min: '0', max: '24', step: '0.25', value: '8' });
+  const hoursInput = numberControl('hoursPerDay', { decimal: true, min: '0', max: '24', step: '0.25', value: '8' });
   const minutesInput = numberControl('extraMinutes', { min: '0', max: '59', step: '1', value: '0', inputmode: 'numeric' });
   hoursInput.addEventListener('input', () => { refreshChips(); emit(); });
   minutesInput.addEventListener('input', () => { refreshChips(); emit(); });
@@ -290,7 +294,7 @@ export function createDeviceForm({
   tariffGrid.appendChild(useDefaultRow);
 
   const tariffRow = el('div', { class: 'field-pair' });
-  const tariffInput = numberControl('tariff', { min: '0', step: 'any', value: String(settings?.get().tariff ?? 1444.7) });
+  const tariffInput = numberControl('tariff', { decimal: true, min: '0', value: String(settings?.get().tariff ?? 1444.7) });
   const tariffNameInput = textControl('tariffName', { placeholder: 'Opsional, mis. R-1/TR 1300 VA', value: settings?.get().tariffName ?? '' });
   tariffInput.addEventListener('input', emit);
   tariffNameInput.addEventListener('input', emit);

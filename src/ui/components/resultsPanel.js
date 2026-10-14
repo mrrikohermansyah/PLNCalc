@@ -100,9 +100,11 @@ export function createResultsPanel({ onPeriodChange = () => {} } = {}) {
 
   const emptyState = el('p', { class: 'empty-hint', text: 'Hasil akan muncul otomatis saat Anda mengisi nama dan daya perangkat.' });
 
-  root.append(hero, tabs, emptyState, cards, table, assumptions);
+  const tableWrap = el('div', { class: 'table-scroll' }, table);
+
+  root.append(hero, tabs, emptyState, cards, tableWrap, assumptions);
   cards.hidden = true;
-  table.hidden = true;
+  tableWrap.hidden = true;
 
   function setPeriod(next) {
     period = next;
@@ -123,7 +125,7 @@ export function createResultsPanel({ onPeriodChange = () => {} } = {}) {
     if (!result) {
       emptyState.hidden = false;
       cards.hidden = true;
-      table.hidden = true;
+      tableWrap.hidden = true;
       assumptions.hidden = true;
       heroValue.textContent = 'Rp—';
       heroSub.textContent = 'Isi data perangkat untuk melihat hasil';
@@ -131,7 +133,7 @@ export function createResultsPanel({ onPeriodChange = () => {} } = {}) {
     }
     emptyState.hidden = true;
     cards.hidden = false;
-    table.hidden = false;
+    tableWrap.hidden = false;
 
     const { input, power } = result;
     heroLabel.textContent = `Estimasi biaya ${PERIOD_LABELS[period].toLowerCase()}`;

@@ -1,6 +1,7 @@
 import { el } from '../dom.js';
 import { iconEl } from '../icons.js';
 import { calculateDevice, calculateSavings } from '../../core/engine.js';
+import { parseLocaleNumber } from '../../core/validate.js';
 import { formatRupiah, formatPercent } from '../../core/format.js';
 
 export function createSavingsPanel() {
@@ -26,17 +27,25 @@ export function createSavingsPanel() {
   const inputs = {};
   const controls = el('div', { class: 'savings-controls' });
 
-  function field(labelText, attrs) {
-    const control = el('input', { class: 'input', type: 'number', step: 'any', ...attrs });
+  function field(labelText, { decimal = false, ...attrs } = {}) {
+    // Field desimal memakai type=text + inputmode=decimal agar koma format Indonesia bisa diketik.
+    const control = el('input', {
+      class: 'input',
+      type: decimal ? 'text' : 'number',
+      inputmode: 'decimal',
+      autocomplete: 'off',
+      step: 'any',
+      ...attrs,
+    });
     const wrap = el('div', { class: 'field' }, el('label', { class: 'field-label', text: labelText }), control);
     control.addEventListener('input', compare);
     return { wrap, control };
   }
 
-  const power = field('Daya baru per unit (W)', { min: '0', 'aria-label': 'Daya baru per unit dalam watt' });
-  const hours = field('Jam/hari baru', { min: '0', max: '24', step: '0.25' });
+  const power = field('Daya baru per unit (W)', { decimal: true, min: '0', 'aria-label': 'Daya baru per unit dalam watt' });
+  const hours = field('Jam/hari baru', { decimal: true, min: '0', max: '24', step: '0.25' });
   const quantity = field('Jumlah unit baru', { min: '1', step: '1' });
-  const tariff = field('Tarif baru (Rp/kWh)', { min: '0' });
+  const tariff = field('Tarif baru (Rp/kWh)', { decimal: true, min: '0' });
   inputs.power = power.control;
   inputs.hours = hours.control;
   inputs.quantity = quantity.control;
@@ -89,15 +98,15 @@ export function createSavingsPanel() {
 
     const nextValues = {
       ...input,
-      powerValue: Number(inputs.power.value),
+      powerValue: parseLocaleNumber(inputs.power.value),
       powerUnit: 'W',
       calcMode: 'constant',
       powerMin: null,
       powerMax: null,
-      hoursPerDay: Number(inputs.hours.value),
+      hoursPerDay: parseLocaleNumber(inputs.hours.value),
       extraMinutes: 0,
-      quantity: Number(inputs.quantity.value),
-      tariff: Number(inputs.tariff.value),
+      quantity: parseLocaleNumber(inputs.quantity.value),
+      tariff: parseLocaleNumber(inputs.tariff.value),
     };
 
     const invalid =

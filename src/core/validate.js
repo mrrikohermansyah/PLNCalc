@@ -14,6 +14,10 @@ function asNumber(value) {
   return { empty: value == null, value: Number(value) };
 }
 
+export function parseLocaleNumber(value) {
+  return asNumber(value).value;
+}
+
 function checkNumber(errors, field, label, raw, { min = -Infinity, max = Infinity, integer = false, required = true } = {}) {
   const { empty, value } = asNumber(raw);
   if (empty) {

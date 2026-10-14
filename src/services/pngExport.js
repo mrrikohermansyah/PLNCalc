@@ -27,18 +27,17 @@ function downloadBlob(blob, filename) {
   setTimeout(() => URL.revokeObjectURL(url), 2000);
 }
 
+// Lebar desain struk. Ekspor selalu memakai lebar ini supaya pratinjau di layar ponsel yang
+// sempit tidak ikut mengecilkan hasil, sementara tinggi diukur dari kloning agar struk utuh.
+const RECEIPT_EXPORT_WIDTH = 430;
+
 async function renderReceiptPng(element, scale = 2) {
   const { toPng } = await getHtmlToImage();
-  const rect = element.getBoundingClientRect();
-  const width = Math.max(Math.ceil(rect.width), Math.ceil(element.scrollWidth));
-  const height = Math.ceil(element.scrollHeight);
-  if (width <= 0 || height <= 0) {
-    throw new Error('Elemen struk tidak memiliki ukuran yang valid. Buka halaman kalkulator terlebih dahulu.');
-  }
 
   const clone = element.cloneNode(true);
   clone.classList.add('rc-export');
-  clone.style.width = `${width}px`;
+  clone.style.width = `${RECEIPT_EXPORT_WIDTH}px`;
+  clone.style.maxWidth = 'none';
   clone.style.margin = '0';
   clone.style.boxShadow = 'none';
   clone.style.transform = 'none';
@@ -52,6 +51,12 @@ async function renderReceiptPng(element, scale = 2) {
   try {
     if (document.fonts?.ready) {
       await Promise.race([document.fonts.ready, new Promise((r) => setTimeout(r, 3000))]);
+    }
+    const rect = clone.getBoundingClientRect();
+    const width = Math.ceil(rect.width);
+    const height = Math.ceil(rect.height);
+    if (width <= 0 || height <= 0) {
+      throw new Error('Elemen struk tidak memiliki ukuran yang valid. Buka halaman kalkulator terlebih dahulu.');
     }
     const dataUrl = await toPng(clone, {
       pixelRatio: scale,

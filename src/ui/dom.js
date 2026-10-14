@@ -3,6 +3,7 @@ export function el(tag, props = {}, ...children) {
   for (const [key, value] of Object.entries(props || {})) {
     if (value == null || value === false) continue;
     if (key === 'class') node.className = value;
+    else if (key === 'htmlFor') node.setAttribute('for', value);
     else if (key === 'text') node.textContent = value;
     else if (key === 'html') node.innerHTML = value;
     else if (key === 'style') node.setAttribute('style', value);

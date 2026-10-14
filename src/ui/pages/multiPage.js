@@ -4,7 +4,7 @@ import { toastSuccess, toastError } from '../toast.js';
 import { confirmDialog, createDialog } from '../modal.js';
 import { createDeviceForm } from '../components/deviceForm.js';
 import { createReceiptView } from '../components/receiptView.js';
-import { validateDeviceInput, firstError } from '../../core/validate.js';
+import { validateDeviceInput, firstError, parseLocaleNumber } from '../../core/validate.js';
 import { calculateMulti } from '../../core/engine.js';
 import { buildCombinedReceiptData } from '../../services/receipt.js';
 import { exportReceiptPng } from '../../services/pngExport.js';
@@ -81,15 +81,15 @@ export function renderMultiPage(ctx, container) {
   const globalTariffField = el('div', { class: 'field field--inline' });
   const globalTariffInput = el('input', {
     class: 'input',
-    type: 'number',
-    min: '0',
-    step: 'any',
+    type: 'text',
+    inputmode: 'decimal',
+    autocomplete: 'off',
     id: 'multi-global-tariff',
     value: String(state.globalTariff),
     'aria-label': 'Tarif global per kWh',
   });
   globalTariffInput.addEventListener('input', () => {
-    const value = Number(globalTariffInput.value);
+    const value = parseLocaleNumber(globalTariffInput.value);
     state.globalTariff = Number.isFinite(value) && value >= 0 ? value : 0;
     persist();
     recompute();

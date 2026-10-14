@@ -3,6 +3,7 @@ import { iconEl } from '../icons.js';
 import { toastSuccess, toastError } from '../toast.js';
 import { confirmDialog } from '../modal.js';
 import { formatRupiah, formatInteger } from '../../core/format.js';
+import { parseLocaleNumber } from '../../core/validate.js';
 
 function field(labelText, control, hint) {
   const wrap = el('div', { class: 'field' });
@@ -31,7 +32,8 @@ export function renderSettingsPage(ctx, container) {
 
   // ---------- Tarif default ----------
   const tariffCard = el('section', { class: 'panel' }, el('h2', { class: 'panel-title', text: 'Tarif Listrik Default' }));
-  const tariffInput = el('input', { class: 'input', type: 'number', id: 'set-tariff', min: '0', step: 'any', value: String(current.tariff) });
+  // type=text + inputmode=decimal: keyboard numeric iOS tidak punya tombol koma untuk "1.444,70".
+  const tariffInput = el('input', { class: 'input', type: 'text', id: 'set-tariff', inputmode: 'decimal', autocomplete: 'off', value: String(current.tariff) });
   const tariffNameInput = el('input', { class: 'input', type: 'text', id: 'set-tariff-name', value: current.tariffName });
   const tariffCategoryInput = el('input', { class: 'input', type: 'text', id: 'set-tariff-category', value: current.tariffCategory ?? '' });
   const tariffBody = el('div', { class: 'field-grid' });
@@ -157,7 +159,7 @@ export function renderSettingsPage(ctx, container) {
 
   form.addEventListener('submit', (event) => {
     event.preventDefault();
-    const tariff = Number(tariffInput.value);
+    const tariff = parseLocaleNumber(tariffInput.value);
     const daysPerMonth = Number(monthInput.value);
     const daysPerYear = Number(yearInput.value);
     if (!Number.isFinite(tariff) || tariff < 0) {

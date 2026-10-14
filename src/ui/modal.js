@@ -1,5 +1,34 @@
 import { el } from './dom.js';
 
+let openDialogs = 0;
+let savedScrollY = 0;
+
+function lockBackgroundScroll() {
+  if (openDialogs === 0) {
+    const de = document.documentElement;
+    savedScrollY = window.scrollY || de.scrollTop || 0;
+    // Kompensasi scrollbar agar layout desktop tidak bergeser saat body dikunci.
+    const gutter = Math.max(0, window.innerWidth - de.clientWidth);
+    de.style.setProperty('--modal-lock-offset', `${-savedScrollY}px`);
+    de.style.setProperty('--modal-lock-gutter', `${gutter}px`);
+    de.classList.add('modal-open');
+  }
+  openDialogs += 1;
+}
+
+function unlockBackgroundScroll() {
+  openDialogs = Math.max(0, openDialogs - 1);
+  if (openDialogs > 0) return;
+  const de = document.documentElement;
+  de.classList.remove('modal-open');
+  const y = savedScrollY;
+  savedScrollY = 0;
+  de.style.removeProperty('--modal-lock-offset');
+  de.style.removeProperty('--modal-lock-gutter');
+  // Dibaca/scroll kembali setelah layout normal terpasang.
+  requestAnimationFrame(() => window.scrollTo(0, y));
+}
+
 export function createDialog({ title, content, actions = [], wide = false, onClose = null }) {
   let resolvePromise;
   const promise = new Promise((resolve) => {
@@ -8,6 +37,8 @@ export function createDialog({ title, content, actions = [], wide = false, onClo
 
   const dialog = el('dialog', { class: `modal${wide ? ' modal--wide' : ''}` });
   const form = el('form', { class: 'modal-body', method: 'dialog' });
+  // Semua tombol dialog menutup lewat dialog.close(); submit implisit (Enter di HP) tidak boleh menutup dialog.
+  form.addEventListener('submit', (e) => e.preventDefault());
 
   const header = el('div', { class: 'modal-head' });
   header.appendChild(el('h2', { class: 'modal-title', text: title }));
@@ -43,7 +74,14 @@ export function createDialog({ title, content, actions = [], wide = false, onClo
   }
 
   dialog.appendChild(form);
+  body.addEventListener('focusin', (event) => {
+    const target = event.target;
+    if (target instanceof HTMLElement && /^(INPUT|SELECT|TEXTAREA)$/.test(target.tagName)) {
+      target.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    }
+  });
   dialog.addEventListener('close', () => {
+    unlockBackgroundScroll();
     const value = dialog.returnValue === 'dismiss' ? null : dialog.returnValue;
     dialog.remove();
     resolvePromise(value);
@@ -56,6 +94,7 @@ export function createDialog({ title, content, actions = [], wide = false, onClo
     open() {
       document.body.appendChild(dialog);
       dialog.showModal();
+      lockBackgroundScroll();
       return promise;
     },
     close(value) {

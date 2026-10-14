@@ -52,6 +52,7 @@
 .period-tab {
   flex: 1 1 auto;
   min-width: 58px;
+  min-height: 44px;
   padding: 8px 10px;
   border: 1px solid var(--border-strong);
   border-radius: var(--radius-sm);
@@ -62,15 +63,17 @@
   cursor: pointer;
 }
 
-.period-tab:hover {
-  border-color: var(--primary);
-  color: var(--primary);
-}
-
 .period-tab--active {
   background: var(--primary);
   border-color: var(--primary);
   color: #fff;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .period-tab:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+  }
 }
 
 .result-cards {
@@ -114,6 +117,14 @@
   color: var(--danger);
 }
 
+/* Tabel hasil bisa lebih lebar dari layar ponsel; biarkan wadah ini yang menggulung,
+   bukan halaman — kolom ringkasan tetap terbaca tanpa membuat layout melebar. */
+.table-scroll {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
 .result-table {
   width: 100%;
   border-collapse: collapse;
@@ -136,6 +147,8 @@
   color: var(--text-faint);
   font-weight: 700;
   background: var(--surface-2);
+  white-space: normal;
+  min-width: 64px;
 }
 
 .result-table th[scope='row'] {
@@ -258,9 +271,10 @@
 
 .receipt-scroll {
   overflow-x: auto;
-  padding: 4px;
+  padding: 8px 4px;
   background: var(--surface-3);
   border-radius: var(--radius-sm);
+  -webkit-overflow-scrolling: touch;
 }
 
 .receipt-actions {
@@ -433,7 +447,7 @@
 /* ---------- presets ---------- */
 .preset-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(250px, 100%), 1fr));
   gap: 12px;
 }
 
@@ -513,7 +527,10 @@
   flex-direction: column;
   gap: 6px;
   max-height: 52vh;
+  max-height: 52dvh;
   overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
   padding-right: 4px;
 }
 
@@ -522,6 +539,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 10px;
+  min-height: 44px;
   padding: 10px 12px;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
@@ -529,11 +547,6 @@
   cursor: pointer;
   text-align: left;
   font-size: 13.5px;
-}
-
-.preset-pick:hover {
-  border-color: var(--primary);
-  background: var(--primary-soft);
 }
 
 .preset-pick-name {
@@ -545,6 +558,13 @@
   font-weight: 700;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .preset-pick:hover {
+    border-color: var(--primary);
+    background: var(--primary-soft);
+  }
 }
 
 /* ---------- device form in modal ---------- */
